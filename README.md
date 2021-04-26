@@ -1,4 +1,4 @@
-# app
+# trello_clone
 
 ## Project setup
 ```
