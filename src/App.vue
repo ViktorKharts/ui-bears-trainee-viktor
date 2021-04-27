@@ -50,22 +50,22 @@ export default {
       this.columns = this.columns.filter(col => col.id !== column_id)
     },
     removeCard(column__id, item_id) {
-      this.columns[column__id].items = this.columns[column__id].items.filter(item => item.id !== item_id)
+      this.columns[column_id].items = this.columns[column_id].items.filter(item => item.id !== item_id)
     },
     addColumn(newColumn) {
       this.columns.push(newColumn)
     },
-    addCard(newCard, column____id) {
-      this.columns[column____id].items.push(newCard)
+    addCard(newCard, column_id) {
+      this.columns[column_id].items.push(newCard)
     },
-    columnChangeTitle(column_____id, newTitle) {
-      this.columns[column_____id].title = newTitle
-      console.log(this.columns[column_____id])
+    columnChangeTitle(column_id, newTitle) {
+      this.columns[column_id].title = newTitle
+      console.log(this.columns[column_id])
     },
-    editCard(column______id, item_______id, cardTitle, cardDesc) {
-      this.columns[column______id].items[item_______id].title = cardTitle
-      this.columns[column______id].items[item_______id].description = cardDesc
-      console.log(this.columns[column______id].items[item_______id])
+    editCard(column_id, item_id, cardTitle, cardDesc) {
+      this.columns[column_id].items[item_id].title = cardTitle
+      this.columns[column_id].items[item_id].description = cardDesc
+      console.log(this.columns[column_id].items[item_id])
     }
   }
 }
