@@ -49,7 +49,7 @@ export default {
     removeColumn(column_id) {
       this.columns = this.columns.filter(col => col.id !== column_id)
     },
-    removeCard(column__id, item_id) {
+    removeCard(column_id, item_id) {
       this.columns[column_id].items = this.columns[column_id].items.filter(item => item.id !== item_id)
     },
     addColumn(newColumn) {
