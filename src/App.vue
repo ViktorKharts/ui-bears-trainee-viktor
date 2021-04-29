@@ -3,7 +3,7 @@
     <div class="app">
       <h1>Trello Clone</h1>
     </div>
-    <div>
+    <div class="app-body">
       <ColumnList 
         :columns="columns"
         @remove-column="removeColumn"
@@ -46,26 +46,26 @@ export default {
     ColumnList
   },
   methods: {
-    removeColumn(column_id) {
-      this.columns = this.columns.filter(col => col.id !== column_id)
+    removeColumn(columnId) {
+      this.columns = this.columns.filter(col => col.id !== columnId)
     },
-    removeCard(column_id, item_id) {
-      this.columns[column_id].items = this.columns[column_id].items.filter(item => item.id !== item_id)
+    removeCard(columnId, itemId) {
+      this.columns[columnId].items = this.columns[columnId].items.filter(item => item.id !== itemId)
     },
     addColumn(newColumn) {
       this.columns.push(newColumn)
     },
-    addCard(newCard, column_id) {
-      this.columns[column_id].items.push(newCard)
+    addCard(newCard, columnId) {
+      this.columns[columnId].items.push(newCard)
     },
-    columnChangeTitle(column_id, newTitle) {
-      this.columns[column_id].title = newTitle
-      console.log(this.columns[column_id])
+    columnChangeTitle(columnId, newTitle) {
+      this.columns[columnId].title = newTitle
+      console.log(this.columns[columnId])
     },
-    editCard(column_id, item_id, cardTitle, cardDesc) {
-      this.columns[column_id].items[item_id].title = cardTitle
-      this.columns[column_id].items[item_id].description = cardDesc
-      console.log(this.columns[column_id].items[item_id])
+    editCard(columnId, itemId, cardTitle, cardDesc) {
+      this.columns[columnId].items[itemId].title = cardTitle
+      this.columns[columnId].items[itemId].description = cardDesc
+      console.log(this.columns[columnId].items[itemId])
     }
   }
 }
@@ -78,7 +78,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 
 .app {
@@ -89,5 +88,9 @@ export default {
   left: 0;
   width: 100%;
   z-index: 1;
+}
+
+.app-body {
+  margin-top: 60px;
 }
 </style>

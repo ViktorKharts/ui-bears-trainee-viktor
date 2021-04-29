@@ -2,7 +2,7 @@
   <div>
     <div class="card-title" @click="modalShow = !modalShow">
       <h5 v-if="item.title.length < 15">{{item.title}}</h5>
-      <h5 v-else>{{item.title.slice(0, 15) + '...'}}</h5>
+      <h5 v-else style="word-break: break-word;">{{item.title}}</h5>
       <b-button @click="removeCard" pill variant="outline-danger" size="sm">&times;</b-button>
     </div>
 
@@ -45,15 +45,15 @@ export default {
   },
   methods: {
     removeCard() {
-      const column_id = this.columns.indexOf(this.column)
-      const item_id = this.item.id
-      this.$emit('remove-card', column_id, item_id)
+      const columnId = this.columns.indexOf(this.column)
+      const itemId = this.item.id
+      this.$emit('remove-card', columnId, itemId)
     },
     editCard() {
-      const column_id = this.columns.indexOf(this.column)
-      const item_id = this.column.items.indexOf(this.item)
+      const columnId = this.columns.indexOf(this.column)
+      const itemId = this.column.items.indexOf(this.item)
       if (this.cardTitle.trim() && this.cardDesc.trim()) {
-        this.$emit('edit-card', column_id, item_id, this.cardTitle, this.cardDesc)
+        this.$emit('edit-card', columnId, itemId, this.cardTitle, this.cardDesc)
       }
     }
   }

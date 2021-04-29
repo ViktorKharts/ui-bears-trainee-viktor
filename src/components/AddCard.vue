@@ -32,8 +32,8 @@ export default {
           description: ''
         }
 
-        const column_id = this.columns.indexOf(this.column)
-        this.$emit('add-card', newCard, column_id)
+        const columnId = this.columns.indexOf(this.column)
+        this.$emit('add-card', newCard, columnId)
         this.title = ''
       }
     }

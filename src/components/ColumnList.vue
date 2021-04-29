@@ -50,23 +50,23 @@ export default {
     }
   },
   methods: {
-    addCard(newCard, column_id) {
-      this.$emit('add-card', newCard, column_id)
+    addCard(newCard, columnId) {
+      this.$emit('add-card', newCard, columnId)
     },
     addColumn(newColumn) {
       this.$emit('add-column', newColumn)
     },
-    removeCard(column__id, item__id) {
-      this.$emit('remove-card', column__id, item__id)
+    removeCard(columnId, itemId) {
+      this.$emit('remove-card', columnId, itemId)
     },
     removeColumn(columnIndex) {
       this.$emit('remove-column', columnIndex)
     },
-    changeColumnTitle(column_____id, newTitle) {
-      this.$emit('change-column-title', column_____id, newTitle)
+    changeColumnTitle(columnId, newTitle) {
+      this.$emit('change-column-title', columnId, newTitle)
     },
-    editCard(column______id, item___id, cardTitle, cardDesc) {
-      this.$emit('edit-card', column______id, item___id, cardTitle, cardDesc)
+    editCard(columnId, itemId, cardTitle, cardDesc) {
+      this.$emit('edit-card', columnId, itemId, cardTitle, cardDesc)
     }
   }
 }
