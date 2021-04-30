@@ -1,8 +1,7 @@
 <template>
   <div>
     <div class="card-title" @click="modalShow = !modalShow">
-      <h5 v-if="item.title.length < 15">{{item.title}}</h5>
-      <h5 v-else style="word-break: break-word;">{{item.title}}</h5>
+      <h5 class="card-box">{{item.title}}</h5>
       <b-button @click="removeCard" pill variant="outline-danger" size="sm">&times;</b-button>
     </div>
 
@@ -76,5 +75,11 @@ export default {
 .card-title:hover {
   opacity: 0.9;
   box-shadow: 2px 2px 10px 0px black;
+}
+
+.card-box {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
