@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="card-title" @click="modalShow = !modalShow">
-      <h5 class="card-box">{{item.title}}</h5>
+      <h5 class="card-box">{{card.title}}</h5>
       <b-button @click="removeCard" pill variant="outline-danger" size="sm">&times;</b-button>
     </div>
 
     <b-modal id="modal-win" v-model="modalShow" centered hide-header hide-footer>
-      <b-form @submit.prevent="editCard">
+      <b-form @submit.prevent="editCardTitle">
         <b-form-group label="Card Title">
           <b-form-input v-model="cardTitle" />
         </b-form-group>
@@ -16,21 +16,18 @@
         <b-button type="submit" variant="success" @click="$bvModal.hide('modal-win')">OK</b-button>
       </b-form>
     </b-modal>
+
+    <b-modal id="modal-err" v-model="modalErr" centered hide-header hide-footer>
+      <div>Please provide a propper card title.</div>
+      <b-button type="submit" variant="success" @click="$bvModal.hide('modal-err')">OK</b-button>
+    </b-modal>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    columns: {
-      type: Array,
-      required: true
-    },
-    column: {
-      type: Object,
-      required: true
-    },
-    item: {
+    card: {
       type: Object,
       required: true
     }
@@ -38,22 +35,36 @@ export default {
   data () {
     return {
       modalShow: false,
-      cardTitle: this.item.title,
-      cardDesc: this.item.description
+      modalErr: false,
+      cardTitle: this.card.title,
+      cardDesc: this.card.description
     }
   },
   methods: {
     removeCard() {
-      const columnId = this.columns.indexOf(this.column)
-      const itemId = this.item.id
-      this.$emit('remove-card', columnId, itemId)
+      const cardId = this.card.id
+      this.$emit('remove-card', cardId)
     },
-    editCard() {
-      const columnId = this.columns.indexOf(this.column)
-      const itemId = this.column.items.indexOf(this.item)
-      if (this.cardTitle.trim() && this.cardDesc.trim()) {
-        this.$emit('edit-card', columnId, itemId, this.cardTitle, this.cardDesc)
+    editCardTitle() {
+      const cardId = this.card.id
+      const newCard = {
+        paramName: "title",
+        paramValue: this.cardTitle
       }
+
+      if(this.cardTitle && this.cardTitle.trim()) {
+        this.$emit('edit-card-title', cardId, newCard)
+      } else {
+        this.modalErr = true
+      }
+    },
+    editCardDesc() {
+      const cardId = this.card.id
+      const newCard = {
+        paramName: "description",
+        paramValue: this.cardDesc
+      }
+      this.$emit('edit-card-desc', cardId, newCard)
     }
   }
 }

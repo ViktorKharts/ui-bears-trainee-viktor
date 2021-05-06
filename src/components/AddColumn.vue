@@ -35,9 +35,7 @@ export default {
     onSubmit() {
       if (this.title.trim()) {
         const newColumn = {
-          id: Date.now(),
-          title: this.title,
-          items: []
+          title: this.title
         }
         this.$emit('add-column', newColumn)
         this.title = ''

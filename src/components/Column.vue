@@ -33,8 +33,12 @@ export default {
     },
     changeTitle() {
       if (this.newTitle.trim()) {
-        const column_id = this.columns.indexOf(this.column)
-        this.$emit('change-column-title', column_id, this.newTitle)
+        const column_id = this.column.id
+        const title = {
+          paramName: "title",
+          paramValue: this.newTitle
+        }
+        this.$emit('change-column-title', column_id, title)
       }
     }
   }

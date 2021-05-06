@@ -27,13 +27,12 @@ export default {
     onSubmit() {
       if (this.title.trim()) {
         const newCard = {
-          id: Date.now(),
           title: this.title,
+          columnId: this.column.id,
           description: ''
         }
 
-        const columnId = this.columns.indexOf(this.column)
-        this.$emit('add-card', newCard, columnId)
+        this.$emit('add-card', newCard)
         this.title = ''
       }
     }
