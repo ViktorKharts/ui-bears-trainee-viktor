@@ -11,7 +11,7 @@
         @remove-card="removeCard"
         @add-column="addColumn"
         @add-card="addCard"
-        @change-column-title="columnChangeTitle"
+        @edit-column-title="editColumnTitle"
         @edit-card-title="editCardTitle"
         @edit-card-desc="editCardDesc"
       />
@@ -21,6 +21,9 @@
 
 <script>
 import ColumnList from '@/components/ColumnList'
+import axios from 'axios'
+
+const BASE_URL = 'http://localhost:3000/dev'
 export default {
   name: 'App',
   data () {
@@ -30,74 +33,48 @@ export default {
     }
   },
   async created () {    
-    const responseColumns = await fetch('http://localhost:3000/dev/columns')
-    const responseCards = await fetch('http://localhost:3000/dev/cards')
-    this.columns = await responseColumns.json()
-    this.cards = await responseCards.json()
+    const responseColumns = await axios.get('http://localhost:3000/dev/columns')
+    const responseCards = await axios.get('http://localhost:3000/dev/cards')
+    this.columns = responseColumns.data
+    this.cards = responseCards.data
   },
   components: {
     ColumnList
   },
   methods: {
     async addColumn(newColumn) {
-      await fetch('http://localhost:3000/dev/column', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newColumn)
+      const res = await axios.post('http://localhost:3000/dev/column', {
+        title: newColumn.title
       })
     },
     async removeColumn(columnId) {
-      await fetch(`http://localhost:3000/dev/column/${columnId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+      const res = await axios.delete(`http://localhost:3000/dev/column/${columnId}`)
     },
-    async columnChangeTitle(columnId, newTitle) {
-      await fetch(`http://localhost:3000/dev/column/${columnId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newTitle)
+    async editColumnTitle(columnId, newTitle) {
+      const res = await axios.put(`http://localhost:3000/dev/column/${columnId}`, {
+        "paramName": "title",
+        "paramValue": newTitle
       })
     },
     async addCard(newCard) {
-      await fetch('http://localhost:3000/dev/card', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newCard)
+      const res = await axios.post('http://localhost:3000/dev/card', {
+        title: newCard.title,
+        columnId: newCard.columnId
       })
     },
-    async removeCard(itemId) {
-      await fetch(`http://localhost:3000/dev/card/${itemId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        }
+    async removeCard(cardId) {
+      const res = await axios.delete(`http://localhost:3000/dev/card/${cardId}`)
+    },
+    async editCardTitle(cardId, cardTitle) {
+      const res = await axios.put(`http://localhost:3000/dev/card/${cardId}`, {
+        "paramName": "title",
+        "paramValue": cardTitle
       })
     },
-    async editCardTitle(itemId, cardTitle) {
-      await fetch(`http://localhost:3000/dev/card/${itemId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(cardTitle)
-      })
-    },
-    async editCardDesc(itemId, cardDesc) {
-      await fetch(`http://localhost:3000/dev/card/${itemId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(cardDesc)
+    async editCardDesc(cardId, cardDesc) {
+      const res = await axios.put(`http://localhost:3000/dev/card/${cardId}`, {
+        "paramName": "description",
+        "paramValue": cardDesc
       })
     }
   }

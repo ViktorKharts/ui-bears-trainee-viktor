@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="card-title" @click="modalShow = !modalShow">
-      <h5 class="card-box">{{card.title}}</h5>
+    <div class="card-title">
+      <h5 class="card-box" @click="modalShow = !modalShow">{{card.title}}</h5>
       <b-button @click="removeCard" pill variant="outline-danger" size="sm">&times;</b-button>
     </div>
 
@@ -46,25 +46,18 @@ export default {
       this.$emit('remove-card', cardId)
     },
     editCardTitle() {
-      const cardId = this.card.id
-      const newCard = {
-        paramName: "title",
-        paramValue: this.cardTitle
-      }
-
       if(this.cardTitle && this.cardTitle.trim()) {
-        this.$emit('edit-card-title', cardId, newCard)
+        this.$emit('edit-card-title', this.card.id, this.cardTitle)
       } else {
         this.modalErr = true
       }
     },
     editCardDesc() {
-      const cardId = this.card.id
-      const newCard = {
-        paramName: "description",
-        paramValue: this.cardDesc
+      if(this.cardDesc && this.cardDesc.trim()) {
+        this.$emit('edit-card-desc', this.card.id, this.cardTitle)
+      } else {
+        this.modalErr = true
       }
-      this.$emit('edit-card-desc', cardId, newCard)
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="column-title">
-      <form class="column-form" @submit.prevent="changeTitle">
+      <form class="column-form" @submit.prevent="editTitle">
         <input class="input-field" type="text" v-model="newTitle">
       </form>
       <b-button @click="removeColumn" pill variant="outline-danger" size="sm">&times;</b-button>
@@ -31,14 +31,10 @@ export default {
     removeColumn() {
       this.$emit('remove-column', this.column.id)
     },
-    changeTitle() {
+    editTitle() {
       if (this.newTitle.trim()) {
         const column_id = this.column.id
-        const title = {
-          paramName: "title",
-          paramValue: this.newTitle
-        }
-        this.$emit('change-column-title', column_id, title)
+        this.$emit('edit-column-title', column_id, this.newTitle)
       }
     }
   }
