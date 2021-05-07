@@ -1,7 +1,7 @@
 <template>
   <div>
     <form @submit.prevent="onSubmit">
-      <input id="add-card-input" type="textarea" v-model="title" placeholder="+ Add a card">
+      <input id="add-card-input" type="text" v-model="title" placeholder="+ Add a card">
     </form>
   </div>
 </template>

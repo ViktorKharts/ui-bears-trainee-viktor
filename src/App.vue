@@ -23,7 +23,6 @@
 import ColumnList from '@/components/ColumnList'
 import axios from 'axios'
 
-const BASE_URL = 'http://localhost:3000/dev'
 export default {
   name: 'App',
   data () {
@@ -35,7 +34,7 @@ export default {
   async created () {    
     const responseColumns = await axios.get('http://localhost:3000/dev/columns')
     const responseCards = await axios.get('http://localhost:3000/dev/cards')
-    this.columns = responseColumns.data
+    this.columns = responseColumns.data.sort()
     this.cards = responseCards.data
   },
   components: {
