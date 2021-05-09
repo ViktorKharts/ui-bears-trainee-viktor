@@ -2,11 +2,11 @@
   <div>
     <div class="card-title">
       <h5 class="card-box" @click="modalShow = !modalShow">{{card.title}}</h5>
-      <b-button @click="removeCard" pill variant="outline-danger" size="sm">&times;</b-button>
+      <b-button @click="deleteCard" pill variant="outline-danger" size="sm">&times;</b-button>
     </div>
 
     <b-modal id="modal-win" v-model="modalShow" centered hide-header hide-footer>
-      <b-form @submit.prevent="editCardTitle">
+      <b-form @submit.prevent="editTitle">
         <b-form-group label="Card Title">
           <b-form-input v-model="cardTitle" />
         </b-form-group>
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex'
 export default {
   props: {
     card: {
@@ -41,20 +42,26 @@ export default {
     }
   },
   methods: {
-    removeCard() {
-      const cardId = this.card.id
-      this.$emit('remove-card', cardId)
+    ...mapActions(['removeCard', 'editCardTitle', 'editCareDesc']),
+    deleteCard() {
+      this.removeCard(this.card.id)
     },
-    editCardTitle() {
+    editTitle() {
       if(this.cardTitle && this.cardTitle.trim()) {
-        this.$emit('edit-card-title', this.card.id, this.cardTitle)
+        this.editCardTitle({
+          cardId: this.card.id, 
+          title: this.cardTitle
+        })
       } else {
         this.modalErr = true
       }
     },
     editCardDesc() {
       if(this.cardDesc && this.cardDesc.trim()) {
-        this.$emit('edit-card-desc', this.card.id, this.cardTitle)
+        this.editCardTitle({
+          cardId: this.card.id, 
+          desc: this.cardDesc
+        })
       } else {
         this.modalErr = true
       }

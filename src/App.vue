@@ -5,15 +5,8 @@
     </div>
     <div class="app-body">
       <ColumnList 
-        :columns="columns"
-        :cards="cards"
-        @remove-column="removeColumn"
-        @remove-card="removeCard"
-        @add-column="addColumn"
-        @add-card="addCard"
-        @edit-column-title="editColumnTitle"
-        @edit-card-title="editCardTitle"
-        @edit-card-desc="editCardDesc"
+        :columns="allColumns"
+        :cards="allCards"
       />
     </div>
   </div>
@@ -21,61 +14,20 @@
 
 <script>
 import ColumnList from '@/components/ColumnList'
-import axios from 'axios'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'App',
-  data () {
-    return {
-      columns: [],
-      cards: []
-    }
-  },
-  async created () {    
-    const responseColumns = await axios.get('http://localhost:3000/dev/columns')
-    const responseCards = await axios.get('http://localhost:3000/dev/cards')
-    this.columns = responseColumns.data.sort()
-    this.cards = responseCards.data
+  computed: mapGetters(['allColumns', 'allCards']),
+  async mounted () {
+    this.getColumns()
+    this.getCards()
   },
   components: {
     ColumnList
   },
   methods: {
-    async addColumn(newColumn) {
-      const res = await axios.post('http://localhost:3000/dev/column', {
-        title: newColumn.title
-      })
-    },
-    async removeColumn(columnId) {
-      const res = await axios.delete(`http://localhost:3000/dev/column/${columnId}`)
-    },
-    async editColumnTitle(columnId, newTitle) {
-      const res = await axios.put(`http://localhost:3000/dev/column/${columnId}`, {
-        "paramName": "title",
-        "paramValue": newTitle
-      })
-    },
-    async addCard(newCard) {
-      const res = await axios.post('http://localhost:3000/dev/card', {
-        title: newCard.title,
-        columnId: newCard.columnId
-      })
-    },
-    async removeCard(cardId) {
-      const res = await axios.delete(`http://localhost:3000/dev/card/${cardId}`)
-    },
-    async editCardTitle(cardId, cardTitle) {
-      const res = await axios.put(`http://localhost:3000/dev/card/${cardId}`, {
-        "paramName": "title",
-        "paramValue": cardTitle
-      })
-    },
-    async editCardDesc(cardId, cardDesc) {
-      const res = await axios.put(`http://localhost:3000/dev/card/${cardId}`, {
-        "paramName": "description",
-        "paramValue": cardDesc
-      })
-    }
+    ...mapActions(['getColumns', 'getCards']),
   }
 }
 </script>

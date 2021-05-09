@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex'
 export default {
   props: {
     columns: {
@@ -32,12 +33,13 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['addColumn']),
     onSubmit() {
       if (this.title.trim()) {
-        const newColumn = {
+        this.addColumn({
           title: this.title
-        }
-        this.$emit('add-column', newColumn)
+        })
+        
         this.title = ''
         this.showInputField = false
       }

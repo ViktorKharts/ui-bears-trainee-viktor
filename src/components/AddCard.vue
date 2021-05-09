@@ -7,12 +7,9 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex'
 export default {
   props: {
-    columns: {
-      type: Array,
-      required: true
-    },
     column: {
       type: Object,
       required: true
@@ -24,15 +21,14 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['addCard']),
     onSubmit() {
       if (this.title.trim()) {
-        const newCard = {
+        this.addCard ({
           title: this.title,
-          columnId: this.column.id,
-          description: ''
-        }
+          columnId: this.column.id
+        })
 
-        this.$emit('add-card', newCard)
         this.title = ''
       }
     }

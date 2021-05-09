@@ -2,29 +2,22 @@
   <div class="container">
       <div class="column-card" v-for="column of columns" :key="column.id">
           <Column 
-            :columns="columns" :column="column" 
-            @remove-column="removeColumn"
-            @edit-column-title="editColumnTitle"
+            :column="column"
           />
         <div v-for="card of cards" :key="card.id">
           <div v-if="matchCardToColumn(card.columnId, column.id)">
             <Card 
               :card="card"
-              @remove-card="removeCard"
-              @edit-card-title="editCardTitle"
-              @edit-card-desc="editCardDesc"
             />
           </div>
         </div>
         <AddCard 
-          :columns="columns" :column="column"
-          @add-card="addCard"
+          :column="column"
         />
         <hr>
       </div>
     <AddColumn 
-      :columns="columns"
-      @add-column="addColumn"
+      :columns="columns"     
     />
   </div>
 </template>
@@ -57,27 +50,6 @@ export default {
     }
   },
   methods: {
-    addCard(newCard) {
-      this.$emit('add-card', newCard)
-    },
-    addColumn(newColumn) {
-      this.$emit('add-column', newColumn)
-    },
-    removeCard(cardId) {
-      this.$emit('remove-card', cardId)
-    },
-    removeColumn(columnIndex) {
-      this.$emit('remove-column', columnIndex)
-    },
-    editColumnTitle(columnId, newTitle) {
-      this.$emit('edit-column-title', columnId, newTitle)
-    },
-    editCardTitle(cardId, cardTitle) {
-      this.$emit('edit-card-title',cardId, cardTitle)
-    },
-    editCardDesc(cardId, cardDesc) {
-      this.$emit('edit-card-desc', cardId, cardDesc)
-    },
     matchCardToColumn(cardId, columnId) {
       if (cardId === columnId) {
         return true

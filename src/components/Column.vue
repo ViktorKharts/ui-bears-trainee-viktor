@@ -4,23 +4,19 @@
       <form class="column-form" @submit.prevent="editTitle">
         <input class="input-field" type="text" v-model="newTitle">
       </form>
-      <b-button @click="removeColumn" pill variant="outline-danger" size="sm">&times;</b-button>
+      <b-button @click="deleteColumn" pill variant="outline-danger" size="sm">&times;</b-button>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   props: {
-    columns: {
-      type: Array,
-      required: true
-    },
     column: {
       type: Object,
       required: true
-    },
-    colIndex: Number
+    }
   },
   data() {
     return {
@@ -28,13 +24,16 @@ export default {
     }
   },
   methods: {
-    removeColumn() {
-      this.$emit('remove-column', this.column.id)
+    ...mapActions(['removeColumn', 'editColumTitle']),
+    deleteColumn() {
+      this.removeColumn(this.column.id)
     },
     editTitle() {
       if (this.newTitle.trim()) {
-        const column_id = this.column.id
-        this.$emit('edit-column-title', column_id, this.newTitle)
+        this.editColumTitle({
+          columnId: this.column.id, 
+          title: this.newTitle
+        })
       }
     }
   }
