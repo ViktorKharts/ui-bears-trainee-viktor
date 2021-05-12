@@ -1,21 +1,21 @@
 <template>
   <div class="container">
-      <div class="column-card" v-for="column of columns" :key="column.id">
-          <Column 
-            :column="column"
-          />
-        <div v-for="card of cards" :key="card.id">
-          <div v-if="matchCardToColumn(card.columnId, column.id)">
-            <Card 
-              :card="card"
-            />
-          </div>
-        </div>
-        <AddCard 
+    <div class="column-card" v-for="column of columns" :key="column.id">
+        <Column 
           :column="column"
         />
-        <hr>
+      <div v-for="card of cards" :key="card.id">
+        <div v-if="matchCardToColumn(card.columnId, column.id)">
+          <Card 
+            :card="card"
+          />
+        </div>
       </div>
+      <AddCard 
+        :column="column"
+      />
+      <hr>
+    </div>
     <AddColumn 
       :columns="columns"     
     />

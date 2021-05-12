@@ -19,16 +19,14 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'App',
   computed: mapGetters(['allColumns', 'allCards']),
-  async mounted () {
-    this.getColumns()
-    this.getCards()
+  async created () {
+    await this.getColumns()
+    await this.getCards()
   },
   components: {
     ColumnList
   },
-  methods: {
-    ...mapActions(['getColumns', 'getCards']),
-  }
+  methods: mapActions(['getColumns', 'getCards'])
 }
 </script>
 

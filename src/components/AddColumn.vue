@@ -33,15 +33,16 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['addColumn']),
-    onSubmit() {
+    ...mapActions(['getColumns', 'addColumn']),
+    async onSubmit() {
       if (this.title.trim()) {
-        this.addColumn({
+        await this.addColumn({
           title: this.title
         })
-        
         this.title = ''
         this.showInputField = false
+      
+        await this.getColumns()
       }
     }
   }

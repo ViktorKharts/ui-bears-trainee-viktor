@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+axios.defaults.baseURL = 'http://localhost:3000/dev'
+
 export default {
   state: {
     columns: []
@@ -11,27 +13,48 @@ export default {
   },
   actions: {
     async getColumns({commit}) {
-      const res = await axios.get('http://localhost:3000/dev/columns')
 
-      commit('updateColumnList', res.data.sort())
+      try {
+        const res = await axios.get('/columns')
+        commit('updateColumnList', res.data.sort((a, b)=>a.createdAt-b.createdAt))
+      } catch (error) {
+        console.log('Failed to get columns.', error)
+        commit('updateColumnList', [])
+      }
     },
+
     async addColumn({commit}, newColumn) {
-      const res = await axios.post('http://localhost:3000/dev/column', {
-        title: newColumn.title
-      })
 
-      commit('addColumn', res.data)
+      try {
+        const res = await axios.post('/column', {
+          title: newColumn.title
+        })
+        commit('addColumn', res.data)
+      } catch (error) {
+        console.log('Failed to create a new column.', error)
+      }
     },
+
     async removeColumn({commit}, columnId) {
-      const res = await axios.delete(`http://localhost:3000/dev/column/${columnId}`)
 
-      commit('removeColumn', columnId)
+      try {
+        const res = await axios.delete(`/column/${columnId}`)
+        commit('removeColumn', columnId)
+      } catch (error) {
+        console.log('Failed to delete a column.', error)
+      }
     },
-    async editColumTitle(context, { columnId, title }) {
-      const res = await axios.put(`http://localhost:3000/dev/column/${columnId}`, {
-        "paramName": "title",
-        "paramValue": title
-      })
+
+    async editColumTitle({commit}, { columnId, title }) {
+
+      try {
+        const res = await axios.put(`/column/${columnId}`, {
+          "paramName": "title",
+          "paramValue": title
+        })
+      } catch (error) {
+        console.log('Failed to edit a column.', error)
+      }
     } 
   },
   mutations: {

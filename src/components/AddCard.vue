@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import { mapActions } from 'vuex'
 export default {
   props: {
     column: {
@@ -21,15 +21,16 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['addCard']),
-    onSubmit() {
+    ...mapActions(['getCards', 'addCard']),
+    async onSubmit() {
       if (this.title.trim()) {
-        this.addCard ({
+        await this.addCard ({
           title: this.title,
           columnId: this.column.id
         })
-
         this.title = ''
+
+        await this.getCards()
       }
     }
   }

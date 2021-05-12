@@ -42,16 +42,18 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['removeCard', 'editCardTitle', 'editCareDesc']),
-    deleteCard() {
-      this.removeCard(this.card.id)
+    ...mapActions(['getCards', 'removeCard', 'editCardTitle', 'editCareDesc']),
+    async deleteCard() {
+      await this.removeCard(this.card.id)
+      await this.getCards()
     },
-    editTitle() {
+    async editTitle() {
       if(this.cardTitle && this.cardTitle.trim()) {
-        this.editCardTitle({
+        await this.editCardTitle({
           cardId: this.card.id, 
           title: this.cardTitle
         })
+        await this.getCards()
       } else {
         this.modalErr = true
       }

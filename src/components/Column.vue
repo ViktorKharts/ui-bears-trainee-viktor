@@ -24,16 +24,18 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['removeColumn', 'editColumTitle']),
-    deleteColumn() {
-      this.removeColumn(this.column.id)
+    ...mapActions(['getColumns', 'removeColumn', 'editColumTitle']),
+    async deleteColumn() {
+      await this.removeColumn(this.column.id)
+      await this.getColumns()
     },
-    editTitle() {
+    async editTitle() {
       if (this.newTitle.trim()) {
-        this.editColumTitle({
+        await this.editColumTitle({
           columnId: this.column.id, 
           title: this.newTitle
         })
+        await this.getColumns()
       }
     }
   }

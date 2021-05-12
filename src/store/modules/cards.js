@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+axios.defaults.baseURL = 'http://localhost:3000/dev'
+
 export default {
   state: {
     cards: []
@@ -11,34 +13,61 @@ export default {
   },
   actions: {
     async getCards({commit}) {
-      const res = await axios.get('http://localhost:3000/dev/cards')
 
-      commit('updateCardsList', res.data)
+      try {
+        const res = await axios.get('/cards')
+        commit('updateCardsList', res.data.sort((a, b)=>a.createdAt-b.createdAt))
+      } catch (error) {
+        console.log('Failed to get cards.', error)
+        commit('updateCardsList', [])
+      }
     },
+
     async addCard({commit}, newCard) {
-      const res = await axios.post('http://localhost:3000/dev/card', {
-        title: newCard.title,
-        columnId: newCard.columnId
-      })
 
-      commit('addCard', res.data)
+      try {
+        const res = await axios.post('/card', {
+          title: newCard.title,
+          columnId: newCard.columnId
+        })
+        commit('addCard', res.data)
+      } catch (error) {
+        console.log('Failed to create a new card.', error)
+      }
     },
+
     async removeCard({commit}, cardId) {
-      const res = await axios.delete(`http://localhost:3000/dev/card/${cardId}`)
-
-      commit('removeCard', cardId)
+      
+      try {
+        const res = await axios.delete(`/card/${cardId}`)
+        commit('removeCard', cardId)
+      } catch (error) {
+        console.log('Failed to delete a card.', error)
+      }
     },
+    
     async editCardTitle(context, { cardId, title }) {
-      const res = await axios.put(`http://localhost:3000/dev/card/${cardId}`, {
-        'paramName': 'title',
-        'paramValue': title
-      })
+
+      try {
+        const res = await axios.put(`/card/${cardId}`, {
+          'paramName': 'title',
+          'paramValue': title
+        })
+      } catch (error) {
+        console.log('Failed to edit card title.', error)
+      }
     },
+
     async editCardDesc(context, { cardId, desc }) {
-      const res = await axios.put(`http://localhost:3000/dev/card/${cardId}`, {
-        'paramName': 'description',
-        'paramValue': desc
-      })
+
+      try {
+        const res = await axios.put(`/card/${cardId}`, {
+          'paramName': 'description',
+          'paramValue': desc
+        })  
+      } catch (error) {
+        console.log('Failed to edit card description.', error)
+      }
     }
   },
   mutations: {
