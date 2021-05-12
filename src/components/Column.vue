@@ -24,7 +24,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getColumns', 'removeColumn', 'editColumTitle']),
+    ...mapActions(['getColumns', 'removeColumn']),
     async deleteColumn() {
       await this.removeColumn(this.column.id)
       await this.getColumns()

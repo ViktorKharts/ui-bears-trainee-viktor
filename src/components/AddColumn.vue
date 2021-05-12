@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
 export default {
   props: {
     columns: {
@@ -32,6 +32,7 @@ export default {
       showInputField: false
     }
   },
+  computed: mapGetters(['allColumns']),
   methods: {
     ...mapActions(['getColumns', 'addColumn']),
     async onSubmit() {

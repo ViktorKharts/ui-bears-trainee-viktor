@@ -46,27 +46,15 @@ export default {
       }
     },
     
-    async editCardTitle(context, { cardId, title }) {
+    async editCardTitle(context, { cardId, title, desc }) {
 
       try {
         const res = await axios.put(`/card/${cardId}`, {
-          'paramName': 'title',
-          'paramValue': title
+          'paramTitle': title, 
+          'paramDesc': desc
         })
       } catch (error) {
         console.log('Failed to edit card title.', error)
-      }
-    },
-
-    async editCardDesc(context, { cardId, desc }) {
-
-      try {
-        const res = await axios.put(`/card/${cardId}`, {
-          'paramName': 'description',
-          'paramValue': desc
-        })  
-      } catch (error) {
-        console.log('Failed to edit card description.', error)
       }
     }
   },

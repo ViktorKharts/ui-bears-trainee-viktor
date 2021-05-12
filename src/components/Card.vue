@@ -51,19 +51,10 @@ export default {
       if(this.cardTitle && this.cardTitle.trim()) {
         await this.editCardTitle({
           cardId: this.card.id, 
-          title: this.cardTitle
-        })
-        await this.getCards()
-      } else {
-        this.modalErr = true
-      }
-    },
-    editCardDesc() {
-      if(this.cardDesc && this.cardDesc.trim()) {
-        this.editCardTitle({
-          cardId: this.card.id, 
+          title: this.cardTitle,
           desc: this.cardDesc
         })
+        await this.getCards()
       } else {
         this.modalErr = true
       }
