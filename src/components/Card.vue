@@ -8,17 +8,17 @@
     <b-modal id="modal-win" v-model="modalShow" centered hide-header hide-footer>
       <b-form @submit.prevent="editTitle">
         <b-form-group label="Card Title">
-          <b-form-input v-model="cardTitle" />
+          <b-form-input v-model.trim="cardTitle" />
         </b-form-group>
         <b-form-group label="Card Description">
-          <b-form-input v-model="cardDesc" />
+          <b-form-input v-model.trim="cardDesc" />
         </b-form-group>
         <b-button type="submit" variant="success" @click="$bvModal.hide('modal-win')">OK</b-button>
       </b-form>
     </b-modal>
 
     <b-modal id="modal-err" v-model="modalErr" centered hide-header hide-footer>
-      <div>Please provide a propper card title.</div>
+      <div>Please fill in both of the fields when editing a card.</div>
       <b-button type="submit" variant="success" @click="$bvModal.hide('modal-err')">OK</b-button>
     </b-modal>
   </div>
@@ -48,7 +48,7 @@ export default {
       await this.getCards()
     },
     async editTitle() {
-      if(this.cardTitle && this.cardTitle.trim()) {
+      if(this.cardTitle && this.cardTitle.trim() && this.cardDesc && this.cardDesc.trim()) {
         await this.editCardTitle({
           cardId: this.card.id, 
           title: this.cardTitle,
@@ -57,6 +57,7 @@ export default {
         await this.getCards()
       } else {
         this.modalErr = true
+        this.cardDesc = this.card.description
       }
     }
   }
