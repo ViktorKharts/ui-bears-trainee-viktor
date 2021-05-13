@@ -46,7 +46,7 @@ export default {
       }
     },
     
-    async editCardTitle(context, { cardId, title, desc }) {
+    async editCard(context, { cardId, title, desc }) {
 
       try {
         const res = await axios.put(`/card/${cardId}`, {

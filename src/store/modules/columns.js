@@ -45,11 +45,10 @@ export default {
       }
     },
 
-    async editColumTitle({commit}, { columnId, title }) {
+    async editColumnTitle({commit}, { columnId, title }) {
 
       try {
         const res = await axios.put(`/column/${columnId}`, {
-          "paramName": "title",
           "paramValue": title
         })
       } catch (error) {
