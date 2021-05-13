@@ -1,24 +1,39 @@
 <template>
 <div class="container">
-  <div class="column-card" v-for="column of columns" :key="column.id">
-    <Column 
-      :column="column"
-    />
-    <div v-for="card of cards" :key="card.id">
-      <div v-if="matchCardToColumn(card.columnId, column.id)">
-        <Card 
-          :card="card"
-        />
-      </div>
+  <draggable 
+    class="container" 
+    :list="columns"
+    animation="200"
+    draggable=".column-card"
+  >
+    <div class="column-card" v-for="column of columns" :key="column.id">
+      <Column 
+        :column="column"
+      />
+      <draggable
+        class="draggable-card" 
+        :list="cards.card" 
+        group="cards"
+        ghostClass="on-drag"
+        animation="300"
+      >
+        <div v-for="card of cards" :key="card.id">
+          <div v-if="matchCardToColumn(card.columnId, column.id)">
+            <Card 
+              :card="card"
+            />
+          </div>
+        </div>
+      </draggable>
+      <AddCard 
+        :column="column"
+      />
+      <hr>
     </div>
-    <AddCard 
-      :column="column"
+    <AddColumn 
+      :columns="columns"
     />
-    <hr>
-  </div>
-  <AddColumn 
-    :columns="columns"     
-  />
+  </draggable>
 </div>
 </template>
 
@@ -27,6 +42,9 @@ import AddCard from '@/components/AddCard'
 import AddColumn from '@/components/AddColumn'
 import Card from '@/components/Card'
 import Column from '@/components/Column'
+
+import draggable from 'vuedraggable'
+
 export default {
   props: {
     columns: {
@@ -42,7 +60,8 @@ export default {
     Column,
     Card,
     AddCard,
-    AddColumn
+    AddColumn,
+    draggable
   },
   methods: {
     matchCardToColumn(cardId, columnId) {
@@ -80,5 +99,13 @@ ul {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+.draggable-card {
+  min-height: 10px;
+}
+
+.on-drag {
+  color: white;
 }
 </style>
