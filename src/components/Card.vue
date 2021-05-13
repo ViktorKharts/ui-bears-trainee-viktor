@@ -6,7 +6,7 @@
     </div>
 
     <b-modal id="modal-win" v-model="modalShow" centered hide-header hide-footer>
-      <b-form @submit.prevent="editCard">
+      <b-form @submit.prevent="edit">
         <b-form-group label="Card Title">
           <b-form-input v-model.trim="cardTitle" />
         </b-form-group>
@@ -47,7 +47,7 @@ export default {
       await this.removeCard(this.card.id)
       await this.getCards()
     },
-    async editCard() {
+    async edit() {
       if(this.cardTitle && this.cardDesc) {
         await this.editCard({
           cardId: this.card.id, 
