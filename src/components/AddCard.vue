@@ -1,18 +1,15 @@
 <template>
   <div>
     <form @submit.prevent="onSubmit">
-      <input id="add-card-input" type="textarea" v-model="title" placeholder="+ Add a card">
+      <input id="add-card-input" type="text" v-model="title" placeholder="+ Add a card">
     </form>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   props: {
-    columns: {
-      type: Array,
-      required: true
-    },
     column: {
       type: Object,
       required: true
@@ -24,17 +21,16 @@ export default {
     }
   },
   methods: {
-    onSubmit() {
+    ...mapActions(['getCards', 'addCard']),
+    async onSubmit() {
       if (this.title.trim()) {
-        const newCard = {
-          id: Date.now(),
+        await this.addCard ({
           title: this.title,
-          description: ''
-        }
-
-        const columnId = this.columns.indexOf(this.column)
-        this.$emit('add-card', newCard, columnId)
+          columnId: this.column.id
+        })
         this.title = ''
+
+        await this.getCards()
       }
     }
   }

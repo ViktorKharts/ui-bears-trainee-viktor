@@ -1,26 +1,22 @@
 <template>
   <div>
     <div class="column-title">
-      <form class="column-form" @submit.prevent="changeTitle">
+      <form class="column-form" @submit.prevent="editTitle">
         <input class="input-field" type="text" v-model="newTitle">
       </form>
-      <b-button @click="removeColumn" pill variant="outline-danger" size="sm">&times;</b-button>
+      <b-button @click="deleteColumn" pill variant="outline-danger" size="sm">&times;</b-button>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   props: {
-    columns: {
-      type: Array,
-      required: true
-    },
     column: {
       type: Object,
       required: true
-    },
-    colIndex: Number
+    }
   },
   data() {
     return {
@@ -28,13 +24,18 @@ export default {
     }
   },
   methods: {
-    removeColumn() {
-      this.$emit('remove-column', this.column.id)
+    ...mapActions(['getColumns', 'removeColumn', 'editColumnTitle']),
+    async deleteColumn() {
+      await this.removeColumn(this.column.id)
+      await this.getColumns()
     },
-    changeTitle() {
+    async editTitle() {
       if (this.newTitle.trim()) {
-        const column_id = this.columns.indexOf(this.column)
-        this.$emit('change-column-title', column_id, this.newTitle)
+        await this.editColumnTitle({
+          columnId: this.column.id, 
+          title: this.newTitle
+        })
+        await this.getColumns()
       }
     }
   }

@@ -1,29 +1,25 @@
 <template>
-  <div class="container">
-      <div class="column-card" v-for="column of columns" :key="column.id">
-          <Column 
-            :columns="columns" :column="column" 
-            @remove-column="removeColumn"
-            @change-column-title="changeColumnTitle"
-          />
-        <div v-for="item of column.items" :key="item.id">
-            <Card 
-              :columns="columns" :column="column" :item="item"
-              @remove-card="removeCard"
-              @edit-card="editCard"
-            />
-        </div>
-        <AddCard 
-          :columns="columns" :column="column"
-          @add-card="addCard"
-        />
-        <hr>
-      </div>
-    <AddColumn 
-      :columns="columns"
-      @add-column="addColumn"
+<div class="container">
+  <div class="column-card" v-for="column of columns" :key="column.id">
+    <Column 
+      :column="column"
     />
+    <div v-for="card of cards" :key="card.id">
+      <div v-if="matchCardToColumn(card.columnId, column.id)">
+        <Card 
+          :card="card"
+        />
+      </div>
+    </div>
+    <AddCard 
+      :column="column"
+    />
+    <hr>
   </div>
+  <AddColumn 
+    :columns="columns"     
+  />
+</div>
 </template>
 
 <script>
@@ -36,6 +32,10 @@ export default {
     columns: {
       type: Array,
       required: true
+    },
+    cards: {
+      type: Array,
+      required: true
     }
   },
   components: {
@@ -44,29 +44,11 @@ export default {
     AddCard,
     AddColumn
   },
-  data () {
-    return {
-      columnTitle: ''
-    }
-  },
   methods: {
-    addCard(newCard, columnId) {
-      this.$emit('add-card', newCard, columnId)
-    },
-    addColumn(newColumn) {
-      this.$emit('add-column', newColumn)
-    },
-    removeCard(columnId, itemId) {
-      this.$emit('remove-card', columnId, itemId)
-    },
-    removeColumn(columnIndex) {
-      this.$emit('remove-column', columnIndex)
-    },
-    changeColumnTitle(columnId, newTitle) {
-      this.$emit('change-column-title', columnId, newTitle)
-    },
-    editCard(columnId, itemId, cardTitle, cardDesc) {
-      this.$emit('edit-card', columnId, itemId, cardTitle, cardDesc)
+    matchCardToColumn(cardId, columnId) {
+      if (cardId === columnId) {
+        return true
+      }
     }
   }
 }

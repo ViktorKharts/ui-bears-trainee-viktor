@@ -5,13 +5,8 @@
     </div>
     <div class="app-body">
       <ColumnList 
-        :columns="columns"
-        @remove-column="removeColumn"
-        @remove-card="removeCard"
-        @add-column="addColumn"
-        @add-card="addCard"
-        @change-column-title="columnChangeTitle"
-        @edit-card="editCard"
+        :columns="allColumns"
+        :cards="allCards"
       />
     </div>
   </div>
@@ -19,55 +14,19 @@
 
 <script>
 import ColumnList from '@/components/ColumnList'
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
   name: 'App',
-  data () {
-    return {
-      columns: [
-        {id: 1, title: 'Колонка 1', items: [
-          {id: 1.1, title: 'Карточка 1', description: 'Должно быть как-то так.' },
-          {id: 1.2, title: 'Карточка 2', description: 'А нет, должно быть так.' },
-          {id: 1.3, title: 'Карточка 3', description: 'Должно быть, вообще, не так.' },
-        ]},
-        {id: 2, title: 'Колонка 2', items: [
-          {id: 2.1, title: 'Карточка 4', description: 'Должно быть как-то так.' },
-          {id: 2.2, title: 'Карточка 5', description: 'А нет, должно быть так.' },
-          {id: 2.3, title: 'Карточка 6', description: 'Должно быть, вообще, не так.' },
-        ]},
-        {id: 3, title: 'Колонка 3', items: [
-          {id: 3.1, title: 'Карточка 7', description: 'Должно быть как-то так.' },
-          {id: 3.2, title: 'Карточка 8', description: 'А нет, должно быть так.' },
-          {id: 3.3, title: 'Карточка 9', description: 'Должно быть, вообще, не так.' },
-        ]},
-      ]
-    }
+  computed: mapGetters(['allColumns', 'allCards']),
+  async created () {
+    await this.getColumns()
+    await this.getCards()
   },
   components: {
     ColumnList
   },
-  methods: {
-    removeColumn(columnId) {
-      this.columns = this.columns.filter(col => col.id !== columnId)
-    },
-    removeCard(columnId, itemId) {
-      this.columns[columnId].items = this.columns[columnId].items.filter(item => item.id !== itemId)
-    },
-    addColumn(newColumn) {
-      this.columns.push(newColumn)
-    },
-    addCard(newCard, columnId) {
-      this.columns[columnId].items.push(newCard)
-    },
-    columnChangeTitle(columnId, newTitle) {
-      this.columns[columnId].title = newTitle
-      console.log(this.columns[columnId])
-    },
-    editCard(columnId, itemId, cardTitle, cardDesc) {
-      this.columns[columnId].items[itemId].title = cardTitle
-      this.columns[columnId].items[itemId].description = cardDesc
-      console.log(this.columns[columnId].items[itemId])
-    }
-  }
+  methods: mapActions(['getColumns', 'getCards'])
 }
 </script>
 

@@ -1,36 +1,34 @@
 <template>
   <div>
-    <div class="card-title" @click="modalShow = !modalShow">
-      <h5 class="card-box">{{item.title}}</h5>
-      <b-button @click="removeCard" pill variant="outline-danger" size="sm">&times;</b-button>
+    <div class="card-title">
+      <h5 class="card-box" @click="modalShow = !modalShow">{{card.title}}</h5>
+      <b-button @click="deleteCard" pill variant="outline-danger" size="sm">&times;</b-button>
     </div>
 
     <b-modal id="modal-win" v-model="modalShow" centered hide-header hide-footer>
-      <b-form @submit.prevent="editCard">
+      <b-form @submit.prevent="edit">
         <b-form-group label="Card Title">
-          <b-form-input v-model="cardTitle" />
+          <b-form-input v-model.trim="cardTitle" />
         </b-form-group>
         <b-form-group label="Card Description">
-          <b-form-input v-model="cardDesc" />
+          <b-form-input v-model.trim="cardDesc" />
         </b-form-group>
         <b-button type="submit" variant="success" @click="$bvModal.hide('modal-win')">OK</b-button>
       </b-form>
+    </b-modal>
+
+    <b-modal id="modal-err" v-model="modalErr" centered hide-header hide-footer>
+      <div>Please fill in both of the fields when editing a card.</div>
+      <b-button type="submit" variant="success" @click="$bvModal.hide('modal-err')">OK</b-button>
     </b-modal>
   </div>
 </template>
 
 <script>
+import {mapActions} from 'vuex'
 export default {
   props: {
-    columns: {
-      type: Array,
-      required: true
-    },
-    column: {
-      type: Object,
-      required: true
-    },
-    item: {
+    card: {
       type: Object,
       required: true
     }
@@ -38,21 +36,28 @@ export default {
   data () {
     return {
       modalShow: false,
-      cardTitle: this.item.title,
-      cardDesc: this.item.description
+      modalErr: false,
+      cardTitle: this.card.title,
+      cardDesc: this.card.description
     }
   },
   methods: {
-    removeCard() {
-      const columnId = this.columns.indexOf(this.column)
-      const itemId = this.item.id
-      this.$emit('remove-card', columnId, itemId)
+    ...mapActions(['getCards', 'removeCard', 'editCard']),
+    async deleteCard() {
+      await this.removeCard(this.card.id)
+      await this.getCards()
     },
-    editCard() {
-      const columnId = this.columns.indexOf(this.column)
-      const itemId = this.column.items.indexOf(this.item)
-      if (this.cardTitle.trim() && this.cardDesc.trim()) {
-        this.$emit('edit-card', columnId, itemId, this.cardTitle, this.cardDesc)
+    async edit() {
+      if(this.cardTitle && this.cardDesc) {
+        await this.editCard({
+          cardId: this.card.id, 
+          title: this.cardTitle,
+          desc: this.cardDesc
+        })
+        await this.getCards()
+      } else {
+        this.modalErr = true
+        this.cardDesc = this.card.description
       }
     }
   }
