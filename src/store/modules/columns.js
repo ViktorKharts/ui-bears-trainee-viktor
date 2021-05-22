@@ -16,18 +16,19 @@ export default {
 
       try {
         const res = await axios.get('/columns')
-        commit('updateColumnList', res.data.sort((a, b)=>a.createdAt-b.createdAt))
+        commit('updateColumnList', res.data.sort((a, b)=>a.orderId-b.orderId))
       } catch (error) {
         console.log('Failed to get columns.', error)
         commit('updateColumnList', [])
       }
     },
 
-    async addColumn({commit}, newColumn) {
+    async addColumn({commit}, {title, orderId}) {
 
       try {
         const res = await axios.post('/column', {
-          title: newColumn.title
+          title,
+          orderId
         })
         commit('addColumn', res.data)
       } catch (error) {
@@ -35,21 +36,22 @@ export default {
       }
     },
 
-    async removeColumn({commit}, columnId) {
-
+    async removeColumn({commit}, {id, orderId}) {
+      
       try {
-        const res = await axios.delete(`/column/${columnId}`)
-        commit('removeColumn', columnId)
+        const res = await axios.delete(`/column/${id}/${orderId}`)
+        commit('removeColumn', id)
       } catch (error) {
         console.log('Failed to delete a column.', error)
       }
     },
 
-    async editColumnTitle({commit}, { columnId, title }) {
+    async editColumn({commit}, { title, columnId, orderId }) {
 
       try {
         const res = await axios.put(`/column/${columnId}`, {
-          "paramValue": title
+          "paramTitle": title,
+          "paramOrderId": orderId
         })
       } catch (error) {
         console.log('Failed to edit a column.', error)

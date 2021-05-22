@@ -5,8 +5,7 @@
     </div>
     <div class="app-body">
       <ColumnList 
-        :columns="allColumns"
-        :cards="allCards"
+        :columns="allData"
       />
     </div>
   </div>
@@ -18,7 +17,29 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'App',
-  computed: mapGetters(['allColumns', 'allCards']),
+  data() {
+    return {
+      data: []
+    }
+  },
+  computed: {
+    ...mapGetters(['allColumns', 'allCards']),
+    allData() {
+      this.data = []
+      const columns = this.allColumns
+      const cards = this.allCards
+      columns.forEach((column, index) => {
+        this.data.push(column)
+        this.data[index].cardsArray = []
+        cards.forEach(card => {
+          if(column.id === card.columnId) {
+            this.data[index].cardsArray.push(card)
+          }
+        })
+      })
+      return this.data
+    }
+  },
   async created () {
     await this.getColumns()
     await this.getCards()

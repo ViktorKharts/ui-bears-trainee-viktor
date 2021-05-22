@@ -21,14 +21,28 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getCards', 'addCard']),
+    ...mapActions(['getCards', 'addCard', 'editCard']),
     async onSubmit() {
       if (this.title.trim()) {
+
         await this.addCard ({
           title: this.title,
-          columnId: this.column.id
+          columnId: this.column.id,
+          orderId: this.column.cardsArray.length
         })
         this.title = ''
+
+        for (let i = 0; i < this.column.cardsArray.length; i++) {
+          if(this.column.cardsArray[i].orderId !== i) {
+            await this.editCard({
+              cardId: this.column.cardsArray[i].id,
+              columnId: this.column.cardsArray[i].columnId,
+              title: this.column.cardsArray[i].title,
+              desc: this.column.cardsArray[i].description,
+              orderId: i
+            })
+          }
+        }
 
         await this.getCards()
       }

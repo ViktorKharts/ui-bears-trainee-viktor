@@ -2,7 +2,7 @@
   <div>
     <div class="card-title">
       <h5 class="card-box" @click="modalShow = !modalShow">{{card.title}}</h5>
-      <b-button @click="deleteCard" pill variant="outline-danger" size="sm">&times;</b-button>
+      <b-button @click="deleteCard" class="icon-button"><b-icon icon="trash" class="icon"></b-icon></b-button>
     </div>
 
     <b-modal id="modal-win" v-model="modalShow" centered hide-header hide-footer>
@@ -31,6 +31,10 @@ export default {
     card: {
       type: Object,
       required: true
+    },
+    column: {
+      type: Object,
+      required: true
     }
   },
   data () {
@@ -45,15 +49,32 @@ export default {
     ...mapActions(['getCards', 'removeCard', 'editCard']),
     async deleteCard() {
       await this.removeCard(this.card.id)
+
+      const cardsArray = this.column.cardsArray
+      for (let card of cardsArray) {
+        if(card.orderId !== cardsArray.indexOf(card)) {
+          await this.editCard({
+            cardId: card.id,
+            columnId: card.columnId,
+            title: card.title,
+            desc: card.description,
+            orderId: cardsArray.indexOf(card)
+          })
+        }
+      }
+
       await this.getCards()
     },
     async edit() {
       if(this.cardTitle && this.cardDesc) {
         await this.editCard({
-          cardId: this.card.id, 
+          cardId: this.card.id,
+          columnId: this.column.id, 
           title: this.cardTitle,
-          desc: this.cardDesc
+          desc: this.cardDesc,
+          orderId: this.card.orderId
         })
+
         await this.getCards()
       } else {
         this.modalErr = true
@@ -86,5 +107,24 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-top: 3px;
+}
+
+.icon-button {
+  background: rgb(216, 183, 139);
+  color: black;
+  border: none;
+  border-width: 0px;
+}
+
+.icon-button:hover {
+  background-color: rgb(216, 183, 139);
+  border-color: rgb(216, 183, 139);
+}
+
+.icon:hover {
+  background-color: rgb(216, 183, 139);
+  border-color: rgb(216, 183, 139);
+  opacity: .75;
 }
 </style>

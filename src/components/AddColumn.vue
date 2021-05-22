@@ -38,12 +38,14 @@ export default {
     async onSubmit() {
       if (this.title.trim()) {
         await this.addColumn({
-          title: this.title
+          title: this.title,
+          orderId: this.columns.length
         })
         this.title = ''
         this.showInputField = false
       
         await this.getColumns()
+        this.$forceUpdate()
       }
     }
   }

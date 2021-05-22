@@ -16,19 +16,20 @@ export default {
 
       try {
         const res = await axios.get('/cards')
-        commit('updateCardsList', res.data.sort((a, b)=>a.createdAt-b.createdAt))
+        commit('updateCardsList', res.data.sort((a, b)=>a.orderId-b.orderId))
       } catch (error) {
         console.log('Failed to get cards.', error)
         commit('updateCardsList', [])
       }
     },
 
-    async addCard({commit}, newCard) {
+    async addCard({commit}, { title, columnId, orderId }) {
 
       try {
         const res = await axios.post('/card', {
-          title: newCard.title,
-          columnId: newCard.columnId
+          title,
+          columnId,
+          orderId
         })
         commit('addCard', res.data)
       } catch (error) {
@@ -39,19 +40,23 @@ export default {
     async removeCard({commit}, cardId) {
       
       try {
-        const res = await axios.delete(`/card/${cardId}`)
+        const res = await axios.delete(`/card/${cardId}`, {
+          'parametr': 'some data'
+        })
         commit('removeCard', cardId)
       } catch (error) {
         console.log('Failed to delete a card.', error)
       }
     },
     
-    async editCard(context, { cardId, title, desc }) {
-
+    async editCard(context, { cardId, columnId, title, desc, orderId }) {
+      
       try {
         const res = await axios.put(`/card/${cardId}`, {
+          'paramColumnId': columnId,
           'paramTitle': title, 
-          'paramDesc': desc
+          'paramDesc': desc,
+          'paramOrderId': orderId
         })
       } catch (error) {
         console.log('Failed to edit card title.', error)
