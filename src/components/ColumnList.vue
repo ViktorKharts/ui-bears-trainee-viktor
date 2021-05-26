@@ -1,40 +1,28 @@
 <template>
 <div class="container">
-  <draggable
-    class="container"
-    v-model="columns"
-    animation="200"
-    draggable=".column-card"
-    @change="updateColumns($event, columns)"
-  >
+  <draggable  class="container"
+              v-model="columns"
+              animation="200"
+              draggable=".column-card"
+              @change="updateColumns($event, columns)">
     <div class="column-card" v-for="column of columns" :key="column.id">
-      <Column
-        :column="column"
-        :columns="columns"
-      />
-      <draggable
-        class="draggable-card"
-        v-model="column.cardsArray"
-        group="cards"
-        ghostClass="on-drag"
-        animation="300"
-        @change="updateCards($event, column)"
-      >
+      <Column :column="column"
+              :columns="columns"/>
+      <draggable  class="draggable-card"
+                  v-model="column.cardsArray"
+                  group="cards"
+                  ghostClass="on-drag"
+                  animation="300"
+                  @change="updateCards($event, column)">
         <div v-for="card of column.cardsArray" :key="card.id">
-          <Card
-            :card="card"
-            :column="column"
-          />
+          <Card :card="card"
+                :column="column"/>
         </div>
       </draggable>
-      <AddCard
-        :column="column"
-      />
+      <AddCard :column="column"/>
       <hr>
     </div>
-    <AddColumn
-      :columns="columns"
-    />
+    <AddColumn :columns="columns"/>
   </draggable>
 </div>
 </template>
@@ -65,6 +53,7 @@ export default {
     ...mapActions(['getColumns', 'updateColumn', 'getCards', 'editCard']),
 
     async updateColumns(event, columns) {
+      this.$isLoading(true)
       for(let column of columns) {
         await this.updateColumn({
           id: column.id,
@@ -73,9 +62,11 @@ export default {
           orderId: columns.indexOf(column) 
         })
       }
+      this.$isLoading(false)
     },
 
     async updateCards(event, column) {
+      this.$isLoading(true)
       for (let card of column.cardsArray) {
         this.$forceUpdate()
         await this.editCard({
@@ -86,6 +77,7 @@ export default {
           orderId: column.cardsArray.indexOf(card)
         })
       }
+      this.$isLoading(false)
     }
   }
 }
