@@ -2,10 +2,10 @@
 <div class="container">
   <draggable
     class="container"
-    :list="columns"
+    v-model="columns"
     animation="200"
     draggable=".column-card"
-    :move="moveColumn"
+    @change="updateColumns($event, columns)"
   >
     <div class="column-card" v-for="column of columns" :key="column.id">
       <Column
@@ -14,13 +14,13 @@
       />
       <draggable
         class="draggable-card"
-        :list="column.cardsArray"
+        v-model="column.cardsArray"
         group="cards"
         ghostClass="on-drag"
         animation="300"
         @change="updateCards($event, column)"
       >
-        <div  v-for="card of column.cardsArray" :key="card.id">
+        <div v-for="card of column.cardsArray" :key="card.id">
           <Card
             :card="card"
             :column="column"
@@ -62,46 +62,23 @@ export default {
     draggable
   },
   methods: {
-    ...mapActions(['getColumns', 'editColumn', 'getCards', 'editCard']),
+    ...mapActions(['getColumns', 'updateColumn', 'getCards', 'editCard']),
 
-    async moveColumn(event) {
-      const movedColumn = event.draggedContext.element
-      const futureMovedColumnIndex = event.draggedContext.futureIndex
-      const columnList = event.relatedContext.list
-      const affectedColumn = event.relatedContext.element
-
-      await this.editColumn({
-        title: movedColumn.title,
-        columnId: movedColumn.id,
-        orderId: futureMovedColumnIndex
-      })
-      if (affectedColumn) {
-        await this.editColumn({
-          title: affectedColumn.title,
-          columnId: affectedColumn.id,
-          orderId: columnList.indexOf(affectedColumn)
+    async updateColumns(event, columns) {
+      for(let column of columns) {
+        await this.updateColumn({
+          id: column.id,
+          createdAt: column.createdAt,
+          title: column.title,
+          orderId: columns.indexOf(column) 
         })
       }
-      this.checkColumnOrderId(columnList)
-      await this.getColumns()
     },
 
-    async checkColumnOrderId(columns) {
-      for (let column of columns) {
-        if (column.orderId !== columns.indexOf(column)) {
-          await this.editColumn({
-            title: column.title,
-            columnId: column.id,
-            orderId: columns.indexOf(column)
-          })
-        }
-      }
-    },
-
-    updateCards(event, column) {
+    async updateCards(event, column) {
       for (let card of column.cardsArray) {
         this.$forceUpdate()
-        this.editCard({
+        await this.editCard({
           cardId: card.id,
           columnId: column.id,
           title: card.title,

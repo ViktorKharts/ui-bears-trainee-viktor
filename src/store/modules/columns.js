@@ -15,18 +15,19 @@ export default {
     async getColumns({commit}) {
 
       try {
-        const res = await axios.get('/columns')
-        commit('updateColumnList', res.data.sort((a, b)=>a.orderId-b.orderId))
+        const res = await axios.get('/sortedcolumns')
+        commit('updateColumnList', res.data)
       } catch (error) {
         console.log('Failed to get columns.', error)
         commit('updateColumnList', [])
       }
     },
 
-    async addColumn({commit}, {title, orderId}) {
+    async addColumn({commit}, {id, title, orderId}) {
 
       try {
         const res = await axios.post('/column', {
+          id,
           title,
           orderId
         })
@@ -36,27 +37,41 @@ export default {
       }
     },
 
-    async removeColumn({commit}, {id, orderId}) {
+    async removeColumn({commit}, {id, createdAt}) {
       
       try {
-        const res = await axios.delete(`/column/${id}/${orderId}`)
+        const res = await axios.delete(`/column/${id}/${createdAt}`)
         commit('removeColumn', id)
       } catch (error) {
         console.log('Failed to delete a column.', error)
       }
     },
 
-    async editColumn({commit}, { title, columnId, orderId }) {
+    async updateColumn({commit}, {id, createdAt, title, orderId}) {
 
+      // try {
+      //   const res = await axios.delete(`/column/${id}/${createdAt}`)
+      //   console.log('Successfully deleted a', title)
+      //   commit('removeColumn', id)
+      // } catch (error) {
+      //   console.log('While updating failed to delete a column', error)
+      // }
       try {
-        const res = await axios.put(`/column/${columnId}`, {
-          "paramTitle": title,
-          "paramOrderId": orderId
+        const res = await axios.put(`/column/${id}/${createdAt}`, {
+          title,
+          orderId
         })
       } catch (error) {
-        console.log('Failed to edit a column.', error)
+        console.log('While updating failed to create a new column', error)
       }
-    } 
+
+      // try {
+      //   const res = await axios.get('/columns')
+      //   commit('updateColumnList', res.data)
+      // } catch (error) {
+      //   console.log('While updating failed to retrieve all columns', error)
+      // }
+    }
   },
   mutations: {
     updateColumnList(state, columns) {

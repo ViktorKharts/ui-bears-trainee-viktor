@@ -28,34 +28,29 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getColumns', 'removeColumn', 'editColumn']),
+    ...mapActions(['getColumns', 'removeColumn', 'updateColumn', 'addColumn', 'removeCard']),
     async deleteColumn() {
-      await this.removeColumn({
-        id: this.column.id, 
-        orderId: this.column.orderId
-      })
-
-      for (let i = 0; i < this.columns.length; i++) {
-        if (this.columns[i].orderId !== i) {
-          await this.editColumn({
-            title: this.columns[i].title,
-            columnId: this.columns[i].id,
-            orderId: i
-          })
+      if (this.column.cardsArray.length >= 1) {
+        for (let card of this.column.cardsArray) {
+          await this.removeCard(card.id)
         }
       }
+
+      await this.removeColumn({
+        id: this.column.id, 
+        createdAt: this.column.createdAt
+      })
 
       await this.getColumns()
     },
     async editColumnTitle() {
       if (this.newTitle && this.newTitle !== this.column.title) {
-        await this.editColumn({
+        await this.updateColumn({
+          id: this.column.id,
+          createdAt: this.column.createdAt,
           title: this.newTitle,
-          columnId: this.column.id,
-          orderId: this.column.orderId 
+          orderId: this.column.orderId
         })
-
-        await this.getColumns()
       }
     }
   }

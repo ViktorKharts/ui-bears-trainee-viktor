@@ -40,9 +40,7 @@ export default {
     async removeCard({commit}, cardId) {
       
       try {
-        const res = await axios.delete(`/card/${cardId}`, {
-          'parametr': 'some data'
-        })
+        const res = await axios.delete(`/card/${cardId}`)
         commit('removeCard', cardId)
       } catch (error) {
         console.log('Failed to delete a card.', error)
