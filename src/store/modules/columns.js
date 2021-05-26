@@ -49,13 +49,6 @@ export default {
 
     async updateColumn({commit}, {id, createdAt, title, orderId}) {
 
-      // try {
-      //   const res = await axios.delete(`/column/${id}/${createdAt}`)
-      //   console.log('Successfully deleted a', title)
-      //   commit('removeColumn', id)
-      // } catch (error) {
-      //   console.log('While updating failed to delete a column', error)
-      // }
       try {
         const res = await axios.put(`/column/${id}/${createdAt}`, {
           title,
@@ -64,13 +57,6 @@ export default {
       } catch (error) {
         console.log('While updating failed to create a new column', error)
       }
-
-      // try {
-      //   const res = await axios.get('/columns')
-      //   commit('updateColumnList', res.data)
-      // } catch (error) {
-      //   console.log('While updating failed to retrieve all columns', error)
-      // }
     }
   },
   mutations: {
