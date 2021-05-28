@@ -97,7 +97,7 @@ export default {
           columnId: column.id,
           title: card.title,
           desc: card.description,
-          orderId: column.cardsArray.indexOf(card)
+          orderId: this.columnsArray.column.cardsArray.indexOf(card)
         })
       } else if (event.moved) {
         card = event.moved.element
