@@ -13,7 +13,7 @@ Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.use(loading, {
-  bg: '',
+  bg: 'rgba(255, 255, 255, 0.3)',
   icon: 'refresh',
   size: 5,
   icon_color: 'black'

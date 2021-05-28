@@ -30,6 +30,7 @@ export default {
   methods: {
     ...mapActions(['getColumns', 'removeColumn', 'updateColumn', 'addColumn', 'removeCard']),
     async deleteColumn() {
+      this.$isLoading(true)
       if (this.column.cardsArray.length >= 1) {
         for (let card of this.column.cardsArray) {
           await this.removeCard(card.id)
@@ -42,16 +43,19 @@ export default {
       })
 
       await this.getColumns()
+      this.$isLoading(false)
     },
     async editColumnTitle() {
-      if (this.newTitle && this.newTitle !== this.column.title) {
-        await this.updateColumn({
-          id: this.column.id,
-          createdAt: this.column.createdAt,
-          title: this.newTitle,
-          orderId: this.column.orderId
-        })
-      }
+      this.$isLoading(true)
+      await this.updateColumn({
+        id: this.column.id,
+        createdAt: this.column.createdAt,
+        title: this.newTitle,
+        orderId: this.column.orderId
+      })
+      document.activeElement.blur()
+      
+      this.$isLoading(false)
     }
   }
 }

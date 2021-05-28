@@ -48,8 +48,9 @@ export default {
   methods: {
     ...mapActions(['getCards', 'removeCard', 'editCard']),
     async deleteCard() {
+      this.$isLoading(true)
       await this.removeCard(this.card.id)
-
+      
       const cardsArray = this.column.cardsArray
       for (let card of cardsArray) {
         if(card.orderId !== cardsArray.indexOf(card)) {
@@ -64,9 +65,11 @@ export default {
       }
 
       await this.getCards()
+      this.$isLoading(false)
     },
     async edit() {
       if(this.cardTitle && this.cardDesc) {
+        this.$isLoading(true)
         await this.editCard({
           cardId: this.card.id,
           columnId: this.column.id, 
@@ -76,8 +79,10 @@ export default {
         })
 
         await this.getCards()
+        this.$isLoading(false)
       } else {
         this.modalErr = true
+        this.cardTitle = this.card.title
         this.cardDesc = this.card.description
       }
     }

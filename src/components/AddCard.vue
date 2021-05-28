@@ -25,6 +25,7 @@ export default {
     async onSubmit() {
       if (this.title.trim()) {
 
+        this.$isLoading(true)
         await this.addCard ({
           title: this.title,
           columnId: this.column.id,
@@ -43,8 +44,10 @@ export default {
             })
           }
         }
-
+        
+        document.activeElement.blur()
         await this.getCards()
+        this.$isLoading(false)
       }
     }
   }

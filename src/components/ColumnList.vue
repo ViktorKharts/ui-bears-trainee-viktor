@@ -1,18 +1,20 @@
 <template>
 <div class="container">
   <draggable  class="container"
-              v-model="columns"
-              animation="200"
+              v-model="columnsArray"
+              animation="50"
               draggable=".column-card"
+              ghostClass="ghost"
               @change="updateColumns($event, columns)">
-    <div class="column-card" v-for="column of columns" :key="column.id">
+    <div class="column-card" v-for="column of columnsArray" :key="column.id">
       <Column :column="column"
               :columns="columns"/>
       <draggable  class="draggable-card"
                   v-model="column.cardsArray"
                   group="cards"
-                  ghostClass="on-drag"
-                  animation="300"
+                  ghostClass="ghost"
+                  chosenClass="chosen"
+                  animation="50"
                   @change="updateCards($event, column)">
         <div v-for="card of column.cardsArray" :key="card.id">
           <Card :card="card"
@@ -32,7 +34,7 @@ import AddCard from '@/components/AddCard'
 import AddColumn from '@/components/AddColumn'
 import Card from '@/components/Card'
 import Column from '@/components/Column'
-import { mapActions } from 'vuex'
+import { mapActions, mapMutations } from 'vuex'
 import draggable from 'vuedraggable'
 
 export default {
@@ -40,6 +42,16 @@ export default {
     columns: {
       type: Array,
       required: true
+    }
+  },
+  computed: {
+    columnsArray: {
+      get() {
+        return this.columns
+      },
+      set(value) {
+        this.updateColumnList(value)
+      }
     }
   },
   components: {
@@ -51,6 +63,7 @@ export default {
   },
   methods: {
     ...mapActions(['getColumns', 'updateColumn', 'getCards', 'editCard']),
+    ...mapMutations(['updateColumnList']),
 
     async updateColumns(event, columns) {
       this.$isLoading(true)
@@ -61,13 +74,23 @@ export default {
           title: column.title,
           orderId: columns.indexOf(column) 
         })
+        this.$forceUpdate()
       }
+      await this.getColumns()
       this.$isLoading(false)
     },
 
-    async updateCards(event, column) {
+    async updateCards(event, targetColumn) {
       this.$isLoading(true)
-      for (let card of column.cardsArray) {
+      let card
+      let column
+
+      // check type of action
+      // performed on a card and
+      // update data of that card
+      if(event.added) {
+        card = event.added.element
+        column = targetColumn
         this.$forceUpdate()
         await this.editCard({
           cardId: card.id,
@@ -76,7 +99,34 @@ export default {
           desc: card.description,
           orderId: column.cardsArray.indexOf(card)
         })
+      } else if (event.moved) {
+        card = event.moved.element
+        column = targetColumn
+        this.$forceUpdate()
+        await this.editCard({
+          cardId: card.id,
+          columnId: column.id,
+          title: card.title,
+          desc: card.description,
+          orderId: column.cardsArray.indexOf(card)
+        })
+      } 
+
+      // make sure that all orderId 
+      // of each of the cards corresponds
+      // to cards' positiong in the array
+      for (let col of this.columnsArray) {
+        for (let card of col.cardsArray)
+          await this.editCard({
+            cardId: card.id,
+            columnId: col.id,
+            title: card.title,
+            desc: card.description,
+            orderId: col.cardsArray.indexOf(card)
+        })
       }
+
+      await this.getCards()
       this.$isLoading(false)
     }
   }
@@ -84,6 +134,16 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
 .column-card {
   max-width: 300px;
   width: 100%;
@@ -95,27 +155,11 @@ export default {
   border-radius: 2%;
 }
 
-.container {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: auto;
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-}
-
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
 .draggable-card {
   min-height: 25px;
 }
 
-.on-drag {
-  color: white;
+.ghost {
+  opacity: 0;
 }
 </style>
