@@ -1,12 +1,11 @@
 <template>
   <div id="app">
-    <div class="app">
+    <header>
       <h1>Trello Clone</h1>
-    </div>
+    </header>
     <div class="app-body">
       <ColumnList 
-        :columns="allColumns"
-        :cards="allCards"
+        :columns="allData"
       />
     </div>
   </div>
@@ -18,10 +17,34 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'App',
-  computed: mapGetters(['allColumns', 'allCards']),
+  data() {
+    return {
+      data: []
+    }
+  },
+  computed: {
+    ...mapGetters(['allColumns', 'allCards']),
+    allData() {
+      this.data = []
+      const columns = this.allColumns
+      const cards = this.allCards
+      columns.forEach((column, index) => {
+        this.data.push(column)
+        this.data[index].cardsArray = []
+        cards.forEach(card => {
+          if(column.id === card.columnId) {
+            this.data[index].cardsArray.push(card)
+          }
+        })
+      })
+      return this.data
+    }
+  },
   async created () {
+    this.$isLoading(true)
     await this.getColumns()
     await this.getCards()
+    this.$isLoading(false)
   },
   components: {
     ColumnList
@@ -31,21 +54,37 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+::-webkit-scrollbar {
+  display: none;
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Montserrat', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  background-image: url(
+  https://images.unsplash.com/photo-1472289065668-ce650ac443d2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80
+  );
+  background-attachment: fixed;
+  background-size: cover;
+  width: 1000cm;
+  min-height: 100vh;
 }
 
-.app {
-  background: rgb(131,58,180);
-  background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+header {
+  background: #F79720;
+  background: -webkit-linear-gradient(top, #F79720, #FFD200);
+  background: -moz-linear-gradient(top, #F79720, #FFD200);
+  background: linear-gradient(to bottom, #F79720, #FFD200);
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
+  height: 60px;
   z-index: 1;
 }
 

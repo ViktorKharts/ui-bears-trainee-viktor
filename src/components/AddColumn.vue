@@ -7,12 +7,19 @@
       <b-input-group id="input-group">
         <b-form-input type="text" v-model="title" placeholder="Enter a column name..."></b-form-input>
         <b-input-group-append>
+          <b-button @click="onSubmit" variant="success">
+            <b-icon icon="check2"/>
+          </b-button>
           <b-button @click="showInputField = false" variant="danger">
             <b-icon icon="x" />
           </b-button>
         </b-input-group-append>
       </b-input-group>
     </form>
+    <b-modal id="modal-err" v-model="modalErr" centered hide-header hide-footer>
+      <div>You need to provide a title to create a new column.</div>
+      <b-button type="submit" variant="success" @click="$bvModal.hide('modal-err')">OK</b-button>
+    </b-modal>
   </div>
 
 </template>
@@ -29,7 +36,8 @@ export default {
   data() {
     return {
       title: '',
-      showInputField: false
+      showInputField: false,
+      modalErr: false
     }
   },
   computed: mapGetters(['allColumns']),
@@ -37,13 +45,19 @@ export default {
     ...mapActions(['getColumns', 'addColumn']),
     async onSubmit() {
       if (this.title.trim()) {
+        this.$isLoading(true)
         await this.addColumn({
-          title: this.title
+          title: this.title,
+          orderId: this.columns.length
         })
         this.title = ''
         this.showInputField = false
       
         await this.getColumns()
+        this.$isLoading(false)
+        this.$forceUpdate()
+      } else {
+        this.modalErr = true
       }
     }
   }
@@ -77,7 +91,7 @@ a, a:hover {
 }
 
 #input-group {
-  width: 250px;
+  width: 300px;
   height: auto;
 }
 </style>
